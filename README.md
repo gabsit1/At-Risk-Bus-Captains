@@ -15,16 +15,50 @@ An interactive Streamlit web application designed to analyze, monitor, and visua
 
 To run this project locally on your machine, follow these steps:
 
+## Installation and Setup
+
 1. **Clone the repository:**
+
    ```bash
-   git clone [https://github.com/gabsit1/At-Risk-Bus-Captains.git](https://github.com/gabsit1/At-Risk-Bus-Captains.git)
+   git clone https://github.com/gabsit1/At-Risk-Bus-Captains.git
    cd At-Risk-Bus-Captains
-2. **Create and activate a virtual environment:**
+   ```
+
+2. **Create a virtual environment:**
+
+   ```bash
    python -m venv .venv
-   .venv\Scripts\activate
-3.**Install the required Python packages:**
+   ```
+
+3. **Activate the virtual environment:**
+
+   For Windows (PowerShell):
+
+   ```powershell
+   .\.venv\Scripts\Activate.ps1
+   ```
+
+   For Windows (Command Prompt):
+
+   ```cmd
+   .venv\Scripts\activate.bat
+   ```
+
+4. **Install the required Python packages:**
+
+   ```bash
+   python -m pip install --upgrade pip
    pip install -r requirements.txt
-4.**Generate the required data files:**
+   ```
+
+5. **Generate the required data files:**
+
+   ```bash
    python atrisk_pipeline.py
-5.**Start the Streamlit dashboard:**
+   ```
+
+6. **Launch the Streamlit dashboard:**
+
+   ```bash
    streamlit run dashboard.py
+   ```
