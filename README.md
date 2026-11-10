@@ -19,3 +19,12 @@ To run this project locally on your machine, follow these steps:
    ```bash
    git clone [https://github.com/gabsit1/At-Risk-Bus-Captains.git](https://github.com/gabsit1/At-Risk-Bus-Captains.git)
    cd At-Risk-Bus-Captains
+2. **Create and activate a virtual environment:**
+   python -m venv .venv
+   .venv\Scripts\activate
+3.**Install the required Python packages:**
+   pip install -r requirements.txt
+4.**Generate the required data files:**
+   python atrisk_pipeline.py
+5.**Start the Streamlit dashboard:**
+   streamlit run dashboard.py
