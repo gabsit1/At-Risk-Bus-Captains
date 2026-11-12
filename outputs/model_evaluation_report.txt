@@ -1,0 +1,406 @@
+============================================================================================
+                                  MODEL EVALUATION REPORT                                   
+============================================================================================
+Task      : predict which of 1,544 bus captains had an accident (161 did = 10.4%).
+Test      : 3x repeated 5-fold cross-validation; every score is from captains the model had not seen.
+Models    : 8 trained models + 4 simple baselines (random guessing = the floor).
+Label set : 'all' accidents.
+
+HOW TO READ THE NUMBERS
+  ROC-AUC      : chance the model ranks an accident captain above a non-accident one. 0.50 = guessing.
+  PR-AUC       : precision-recall quality. Guessing scores 0.104 (the accident rate).
+  Accuracy     : share of captains classified correctly. 'Predict nobody' already gets 89.6%!
+  Precision    : of the captains FLAGGED as at-risk, the share who really had an accident.
+  Recall       : of all accident captains, the share that were flagged.
+  Lift         : precision divided by the overall accident rate (1.0x = no better than random).
+
+============================================================================================
+MODEL 1 OF 8: EXTRA TREES   <<< BEST MODEL
+============================================================================================
+HEADLINE SCORES (average over all test folds)
+  ROC-AUC            0.571   (+/- 0.039 between folds; 95% range 0.523-0.620)   guessing = 0.500
+  PR-AUC             0.139   guessing = 0.104
+  Balanced accuracy  0.548   (flagging riskiest 20%)   guessing = 0.500
+
+ACCURACY AND PRECISION
+                                      Accuracy  Precision   Recall     F1  Flagged
+  Default 50% cut-off                    76.2%      15.5%    28.3%  0.200    19.3%
+  Flag riskiest 20%                      75.5%      14.9%    28.7%  0.197    20.0%
+  (random picking would give precision 10.4%; predicting 'nobody' gives accuracy 89.6%)
+
+IF WE FLAG THE RISKIEST X% OF CAPTAINS
+  Flag top  Captains    Accident captains caught  Precision   Recall   Lift
+       5%         77             10 of 161          13.0%     6.2%  1.25x
+      10%        154             20 of 161          13.0%    12.4%  1.25x
+      20%        309             44 of 161          14.2%    27.3%  1.37x
+      30%        463             66 of 161          14.3%    41.0%  1.37x
+
+CONFUSION MATRIX (flag riskiest 20%; all captains, each predicted while unseen)
+                     Flagged   Not flagged
+  Had accident            44           117
+  No accident            265          1118
+  -> 44 accident captains caught, 117 missed, 265 flagged without an accident.
+
+ACCIDENT RATE BY PREDICTED-RISK DECILE (10 = riskiest; a good model rises left to right)
+     1     2     3     4     5     6     7     8     9    10
+     9     8     9     7     6    10    12    14    16    13   (% with accident; overall 10%)
+
+TOP MEASURES THE MODEL RELIES ON
+  night_share                         0.0454
+  n_lines                             0.0447
+  active_days                         0.0294
+  rate_forward_collision_warning      0.0257
+
+IS IT REAL? (shuffle test: re-run with accident labels scrambled)
+  Real AUC 0.571 vs 0.503 with scrambled labels | p = 0.078 | p after correcting for 8 models = 0.627
+  -> NOT shown to be better than luck
+
+============================================================================================
+MODEL 2 OF 8: SVM (RBF)
+============================================================================================
+HEADLINE SCORES (average over all test folds)
+  ROC-AUC            0.547   (+/- 0.041 between folds; 95% range 0.487-0.593)   guessing = 0.500
+  PR-AUC             0.138   guessing = 0.104
+  Balanced accuracy  0.539   (flagging riskiest 20%)   guessing = 0.500
+
+ACCURACY AND PRECISION
+                                      Accuracy  Precision   Recall     F1  Flagged
+  Default 50% cut-off                    89.6%       0.0%     0.0%  0.000     0.0%
+  Flag riskiest 20%                      75.2%      14.1%    27.1%  0.185    20.0%
+  (random picking would give precision 10.4%; predicting 'nobody' gives accuracy 89.6%)
+
+IF WE FLAG THE RISKIEST X% OF CAPTAINS
+  Flag top  Captains    Accident captains caught  Precision   Recall   Lift
+       5%         77              8 of 161          10.4%     5.0%  1.00x
+      10%        154             24 of 161          15.6%    14.9%  1.49x
+      20%        309             42 of 161          13.6%    26.1%  1.30x
+      30%        463             62 of 161          13.4%    38.5%  1.28x
+
+CONFUSION MATRIX (flag riskiest 20%; all captains, each predicted while unseen)
+                     Flagged   Not flagged
+  Had accident            42           119
+  No accident            267          1116
+  -> 42 accident captains caught, 119 missed, 267 flagged without an accident.
+
+ACCIDENT RATE BY PREDICTED-RISK DECILE (10 = riskiest; a good model rises left to right)
+     1     2     3     4     5     6     7     8     9    10
+    13     8    11     8     5     8    11    13    12    15   (% with accident; overall 10%)
+
+TOP MEASURES THE MODEL RELIES ON
+  rate_harsh_acceleration             0.0430
+  n_lines                             0.0428
+  rate_pedestrian_collision_alert     0.0366
+  night_share                         0.0342
+
+IS IT REAL? (shuffle test: re-run with accident labels scrambled)
+  Real AUC 0.547 vs 0.497 with scrambled labels | p = 0.078 | p after correcting for 8 models = 0.627
+  -> NOT shown to be better than luck
+
+============================================================================================
+MODEL 3 OF 8: RANDOM FOREST
+============================================================================================
+HEADLINE SCORES (average over all test folds)
+  ROC-AUC            0.561   (+/- 0.030 between folds; 95% range 0.516-0.612)   guessing = 0.500
+  PR-AUC             0.138   guessing = 0.104
+  Balanced accuracy  0.525   (flagging riskiest 20%)   guessing = 0.500
+
+ACCURACY AND PRECISION
+                                      Accuracy  Precision   Recall     F1  Flagged
+  Default 50% cut-off                    88.6%      18.3%     1.0%  0.020     1.2%
+  Flag riskiest 20%                      74.6%      12.8%    24.6%  0.168    20.0%
+  (random picking would give precision 10.4%; predicting 'nobody' gives accuracy 89.6%)
+
+IF WE FLAG THE RISKIEST X% OF CAPTAINS
+  Flag top  Captains    Accident captains caught  Precision   Recall   Lift
+       5%         77              9 of 161          11.7%     5.6%  1.12x
+      10%        154             18 of 161          11.7%    11.2%  1.12x
+      20%        309             43 of 161          13.9%    26.7%  1.33x
+      30%        463             62 of 161          13.4%    38.5%  1.28x
+
+CONFUSION MATRIX (flag riskiest 20%; all captains, each predicted while unseen)
+                     Flagged   Not flagged
+  Had accident            43           118
+  No accident            266          1117
+  -> 43 accident captains caught, 118 missed, 266 flagged without an accident.
+
+ACCIDENT RATE BY PREDICTED-RISK DECILE (10 = riskiest; a good model rises left to right)
+     1     2     3     4     5     6     7     8     9    10
+     7     7    11     8     8    12    10    12    16    12   (% with accident; overall 10%)
+
+TOP MEASURES THE MODEL RELIES ON
+  active_days                         0.0043
+  rate_pedestrian_collision_alert     0.0035
+  rate_headway_monitoring_alert       0.0035
+  rate_fatigue_alert                  0.0025
+
+IS IT REAL? (shuffle test: re-run with accident labels scrambled)
+  Real AUC 0.561 vs 0.500 with scrambled labels | p = 0.039 | p after correcting for 8 models = 0.314
+  -> Possibly better than luck, but not proven after correction
+
+============================================================================================
+MODEL 4 OF 8: DECISION TREE
+============================================================================================
+HEADLINE SCORES (average over all test folds)
+  ROC-AUC            0.540   (+/- 0.036 between folds; 95% range 0.502-0.603)   guessing = 0.500
+  PR-AUC             0.122   guessing = 0.104
+  Balanced accuracy  0.523   (flagging riskiest 20%)   guessing = 0.500
+
+ACCURACY AND PRECISION
+                                      Accuracy  Precision   Recall     F1  Flagged
+  Default 50% cut-off                    54.3%      12.2%    53.9%  0.199    46.5%
+  Flag riskiest 20%                      74.5%      12.6%    24.2%  0.166    20.0%
+  (random picking would give precision 10.4%; predicting 'nobody' gives accuracy 89.6%)
+
+IF WE FLAG THE RISKIEST X% OF CAPTAINS
+  Flag top  Captains    Accident captains caught  Precision   Recall   Lift
+       5%         77              8 of 161          10.4%     5.0%  1.00x
+      10%        154             12 of 161           7.8%     7.5%  0.75x
+      20%        309             41 of 161          13.3%    25.5%  1.27x
+      30%        463             62 of 161          13.4%    38.5%  1.28x
+
+CONFUSION MATRIX (flag riskiest 20%; all captains, each predicted while unseen)
+                     Flagged   Not flagged
+  Had accident            41           120
+  No accident            268          1115
+  -> 41 accident captains caught, 120 missed, 268 flagged without an accident.
+
+ACCIDENT RATE BY PREDICTED-RISK DECILE (10 = riskiest; a good model rises left to right)
+     1     2     3     4     5     6     7     8     9    10
+     8    10     8     6    11     6    14    14    19     8   (% with accident; overall 10%)
+
+TOP MEASURES THE MODEL RELIES ON
+  rate_forward_collision_warning      0.1136
+  active_days                         0.0831
+  alarms_per_day                      0.0816
+  alarms_per_hour                     0.0501
+
+IS IT REAL? (shuffle test: re-run with accident labels scrambled)
+  Real AUC 0.540 vs 0.500 with scrambled labels | p = 0.039 | p after correcting for 8 models = 0.314
+  -> Possibly better than luck, but not proven after correction
+
+============================================================================================
+MODEL 5 OF 8: GRADIENT BOOSTING
+============================================================================================
+HEADLINE SCORES (average over all test folds)
+  ROC-AUC            0.539   (+/- 0.027 between folds; 95% range 0.499-0.595)   guessing = 0.500
+  PR-AUC             0.127   guessing = 0.104
+  Balanced accuracy  0.513   (flagging riskiest 20%)   guessing = 0.500
+
+ACCURACY AND PRECISION
+                                      Accuracy  Precision   Recall     F1  Flagged
+  Default 50% cut-off                    73.0%      12.2%    25.5%  0.165    21.9%
+  Flag riskiest 20%                      74.2%      11.6%    22.4%  0.153    20.0%
+  (random picking would give precision 10.4%; predicting 'nobody' gives accuracy 89.6%)
+
+IF WE FLAG THE RISKIEST X% OF CAPTAINS
+  Flag top  Captains    Accident captains caught  Precision   Recall   Lift
+       5%         77             12 of 161          15.6%     7.5%  1.49x
+      10%        154             21 of 161          13.6%    13.0%  1.31x
+      20%        309             36 of 161          11.7%    22.4%  1.12x
+      30%        463             53 of 161          11.4%    32.9%  1.10x
+
+CONFUSION MATRIX (flag riskiest 20%; all captains, each predicted while unseen)
+                     Flagged   Not flagged
+  Had accident            36           125
+  No accident            273          1110
+  -> 36 accident captains caught, 125 missed, 273 flagged without an accident.
+
+ACCIDENT RATE BY PREDICTED-RISK DECILE (10 = riskiest; a good model rises left to right)
+     1     2     3     4     5     6     7     8     9    10
+     8     8     9     8    10    10    15    11    10    14   (% with accident; overall 10%)
+
+TOP MEASURES THE MODEL RELIES ON
+  rate_pedestrian_collision_alert     0.0561
+  rate_headway_monitoring_alert       0.0543
+  rate_forward_collision_warning      0.0519
+  weekend_share                       0.0372
+
+IS IT REAL? (shuffle test: re-run with accident labels scrambled)
+  Real AUC 0.539 vs 0.497 with scrambled labels | p = 0.216 | p after correcting for 8 models = 1.000
+  -> NOT shown to be better than luck
+
+============================================================================================
+MODEL 6 OF 8: NAIVE BAYES
+============================================================================================
+HEADLINE SCORES (average over all test folds)
+  ROC-AUC            0.532   (+/- 0.035 between folds; 95% range 0.484-0.584)   guessing = 0.500
+  PR-AUC             0.121   guessing = 0.104
+  Balanced accuracy  0.510   (flagging riskiest 20%)   guessing = 0.500
+
+ACCURACY AND PRECISION
+                                      Accuracy  Precision   Recall     F1  Flagged
+  Default 50% cut-off                    82.8%       9.8%    10.2%  0.100     8.9%
+  Flag riskiest 20%                      74.1%      11.4%    21.9%  0.150    20.0%
+  (random picking would give precision 10.4%; predicting 'nobody' gives accuracy 89.6%)
+
+IF WE FLAG THE RISKIEST X% OF CAPTAINS
+  Flag top  Captains    Accident captains caught  Precision   Recall   Lift
+       5%         77              7 of 161           9.1%     4.3%  0.87x
+      10%        154             19 of 161          12.3%    11.8%  1.18x
+      20%        309             36 of 161          11.7%    22.4%  1.12x
+      30%        463             56 of 161          12.1%    34.8%  1.16x
+
+CONFUSION MATRIX (flag riskiest 20%; all captains, each predicted while unseen)
+                     Flagged   Not flagged
+  Had accident            36           125
+  No accident            273          1110
+  -> 36 accident captains caught, 125 missed, 273 flagged without an accident.
+
+ACCIDENT RATE BY PREDICTED-RISK DECILE (10 = riskiest; a good model rises left to right)
+     1     2     3     4     5     6     7     8     9    10
+    12     6    11    12     5    10    12    13    11    12   (% with accident; overall 10%)
+
+TOP MEASURES THE MODEL RELIES ON
+  p90_speed                           0.0124
+  n_lines                             0.0115
+  rate_pedestrian_collision_alert     0.0100
+  weekend_share                       0.0085
+
+IS IT REAL? (shuffle test: re-run with accident labels scrambled)
+  Real AUC 0.532 vs 0.501 with scrambled labels | p = 0.059 | p after correcting for 8 models = 0.471
+  -> NOT shown to be better than luck
+
+============================================================================================
+MODEL 7 OF 8: K-NEAREST NEIGHBOURS
+============================================================================================
+HEADLINE SCORES (average over all test folds)
+  ROC-AUC            0.535   (+/- 0.039 between folds; 95% range 0.489-0.583)   guessing = 0.500
+  PR-AUC             0.128   guessing = 0.104
+  Balanced accuracy  0.506   (flagging riskiest 20%)   guessing = 0.500
+
+ACCURACY AND PRECISION
+                                      Accuracy  Precision   Recall     F1  Flagged
+  Default 50% cut-off                    89.6%       0.0%     0.0%  0.000     0.0%
+  Flag riskiest 20%                      73.9%      11.0%    21.1%  0.144    20.0%
+  (random picking would give precision 10.4%; predicting 'nobody' gives accuracy 89.6%)
+
+IF WE FLAG THE RISKIEST X% OF CAPTAINS
+  Flag top  Captains    Accident captains caught  Precision   Recall   Lift
+       5%         77              8 of 161          10.4%     5.0%  1.00x
+      10%        154             15 of 161           9.7%     9.3%  0.93x
+      20%        309             32 of 161          10.4%    19.9%  0.99x
+      30%        463             56 of 161          12.1%    34.8%  1.16x
+
+CONFUSION MATRIX (flag riskiest 20%; all captains, each predicted while unseen)
+                     Flagged   Not flagged
+  Had accident            32           129
+  No accident            277          1106
+  -> 32 accident captains caught, 129 missed, 277 flagged without an accident.
+
+ACCIDENT RATE BY PREDICTED-RISK DECILE (10 = riskiest; a good model rises left to right)
+     1     2     3     4     5     6     7     8     9    10
+     9     7     8    12    10    10    11    16    11    10   (% with accident; overall 10%)
+
+TOP MEASURES THE MODEL RELIES ON
+  n_lines                             0.0939
+  rate_harsh_acceleration             0.0936
+  night_share                         0.0884
+  peak_share                          0.0871
+
+IS IT REAL? (shuffle test: re-run with accident labels scrambled)
+  Real AUC 0.535 vs 0.501 with scrambled labels | p = 0.176 | p after correcting for 8 models = 1.000
+  -> NOT shown to be better than luck
+
+============================================================================================
+MODEL 8 OF 8: LOGISTIC REGRESSION
+============================================================================================
+HEADLINE SCORES (average over all test folds)
+  ROC-AUC            0.491   (+/- 0.028 between folds; 95% range 0.439-0.543)   guessing = 0.500
+  PR-AUC             0.117   guessing = 0.104
+  Balanced accuracy  0.508   (flagging riskiest 20%)   guessing = 0.500
+
+ACCURACY AND PRECISION
+                                      Accuracy  Precision   Recall     F1  Flagged
+  Default 50% cut-off                    55.2%      10.9%    46.1%  0.176    44.0%
+  Flag riskiest 20%                      74.0%      11.2%    21.5%  0.147    20.0%
+  (random picking would give precision 10.4%; predicting 'nobody' gives accuracy 89.6%)
+
+IF WE FLAG THE RISKIEST X% OF CAPTAINS
+  Flag top  Captains    Accident captains caught  Precision   Recall   Lift
+       5%         77             10 of 161          13.0%     6.2%  1.25x
+      10%        154             16 of 161          10.4%     9.9%  1.00x
+      20%        309             39 of 161          12.6%    24.2%  1.21x
+      30%        463             54 of 161          11.7%    33.5%  1.12x
+
+CONFUSION MATRIX (flag riskiest 20%; all captains, each predicted while unseen)
+                     Flagged   Not flagged
+  Had accident            39           122
+  No accident            270          1113
+  -> 39 accident captains caught, 122 missed, 270 flagged without an accident.
+
+ACCIDENT RATE BY PREDICTED-RISK DECILE (10 = riskiest; a good model rises left to right)
+     1     2     3     4     5     6     7     8     9    10
+    17    12     7     8     8     6    10    10    14    11   (% with accident; overall 10%)
+
+TOP MEASURES THE MODEL RELIES ON
+  rate_forward_collision_warning      0.0555
+  p90_speed                           0.0269
+  rate_harsh_braking                  0.0257
+  mean_speed                          0.0177
+
+IS IT REAL? (shuffle test: re-run with accident labels scrambled)
+  Real AUC 0.491 vs 0.500 with scrambled labels | p = 0.608 | p after correcting for 8 models = 1.000
+  -> NOT shown to be better than luck
+
+============================================================================================
+                            LEADERBOARD: ALL MODELS SIDE BY SIDE                            
+============================================================================================
+
+TABLE 1 - HOW WELL DOES EACH MODEL RANK CAPTAINS? (used to choose the best model)
+  Rank Model                          ROC-AUC     95% range  PR-AUC  BalAcc Top10 prec Top10 lift Avg rank
+  1    Extra Trees *                    0.571   0.523-0.620   0.139   0.548     13.3%      1.28x     1.25
+  2    SVM (RBF)                        0.547   0.487-0.593   0.138   0.539     14.6%      1.40x     2.00
+  3    Random Forest                    0.561   0.516-0.612   0.138   0.525     12.5%      1.20x     2.75
+  4    Decision Tree                    0.540   0.502-0.603   0.122   0.523     11.6%      1.11x     5.00
+  5    Gradient Boosting                0.539   0.499-0.595   0.127   0.513     11.6%      1.11x     5.25
+  6    Naive Bayes                      0.532   0.484-0.584   0.121   0.510     11.8%      1.13x     6.25
+  7    K-Nearest Neighbours             0.535   0.489-0.583   0.128   0.506     11.2%      1.07x     6.50
+  8    Logistic Regression              0.491   0.439-0.543   0.117   0.508     11.8%      1.13x     6.75
+  -    --- simple baselines (no training) ---
+  -    Rule-based alarm score           0.557   0.515-0.599   0.124   0.506     11.0%      1.06x         
+  -    Alarms per hour (one number)     0.571   0.523-0.614   0.129   0.530     16.9%      1.62x         
+  -    Forward-collision rate only      0.579   0.531-0.628   0.130   0.544     12.3%      1.18x         
+  -    Random guessing                  0.515   0.469-0.565   0.115   0.517     11.7%      1.12x         
+  * = best model. Avg rank = average of the model's rank on ROC-AUC, PR-AUC, BalAcc and Top10 precision.
+
+TABLE 2 - ACCURACY AND PRECISION (default 50% cut-off, and when flagging the riskiest 20%)
+  Model                           Acc@50%  Prec@50%  Flagged@50%   Acc@20  Prec@20  Recall@20  F1@20
+  Extra Trees *                     76.2%     15.5%        19.3%    75.5%    14.9%      28.7%  0.197
+  SVM (RBF)                         89.6%      0.0%         0.0%    75.2%    14.1%      27.1%  0.185
+  Random Forest                     88.6%     18.3%         1.2%    74.6%    12.8%      24.6%  0.168
+  Decision Tree                     54.3%     12.2%        46.5%    74.5%    12.6%      24.2%  0.166
+  Gradient Boosting                 73.0%     12.2%        21.9%    74.2%    11.6%      22.4%  0.153
+  Naive Bayes                       82.8%      9.8%         8.9%    74.1%    11.4%      21.9%  0.150
+  K-Nearest Neighbours              89.6%      0.0%         0.0%    73.9%    11.0%      21.1%  0.144
+  Logistic Regression               55.2%     10.9%        44.0%    74.0%    11.2%      21.5%  0.147
+  Rule-based alarm score              n/a       n/a          n/a    74.0%    11.0%      21.1%  0.145
+  Alarms per hour (one number)        n/a       n/a          n/a    74.9%    13.3%      25.5%  0.174
+  Forward-collision rate only         n/a       n/a          n/a    75.4%    14.6%      28.0%  0.191
+  Random guessing                     n/a       n/a          n/a    74.4%    12.0%      23.0%  0.157
+  'Predict nobody has an accident' scores 89.6% accuracy: accuracy alone cannot pick the best model.
+
+TABLE 3 - IS EACH RESULT REAL? (shuffle test; p below 0.05 = unlikely to be luck)
+  Model                           p-value  Adjusted p   AUC vs rule-based score   Verdict
+  Extra Trees *                     0.078       0.627                    +0.014   Not shown
+  SVM (RBF)                         0.078       0.627                    -0.010   Not shown
+  Random Forest                     0.039       0.314                    +0.004   Maybe
+  Decision Tree                     0.039       0.314                    -0.016   Maybe
+  Gradient Boosting                 0.216       1.000                    -0.017   Not shown
+  Naive Bayes                       0.059       0.471                    -0.025   Not shown
+  K-Nearest Neighbours              0.176       1.000                    -0.022   Not shown
+  Logistic Regression               0.608       1.000                    -0.065   Not shown
+  Adjusted p multiplies each p-value by 8 because 8 models were tried (trying many models makes a lucky win likely).
+
+============================================================================================
+                           VERDICT: THE BEST MODEL IS EXTRA TREES                           
+============================================================================================
+  Why it wins   : best average rank (1.25) across ROC-AUC, PR-AUC, balanced accuracy and top-10% precision.
+                  It is #1 on: ROC-AUC, PR-AUC, balanced accuracy.
+  Its scores    : ROC-AUC 0.571 | PR-AUC 0.139 (guessing 0.104) | accuracy 76.2% | precision 15.5%
+                  Flag the riskiest 10%: 13.3% had an accident = 1.28x the random rate.
+
+  How sure are we?
+   - Shuffle test      : p = 0.078; after correcting for 8 models p = 0.627 -> not shown to be real.
+   - Margin of error   : SVM (RBF), Random Forest, Decision Tree, Gradient Boosting, Naive Bayes, K-Nearest Neighbours score within its 95% range, so the ranking among them is NOT reliable (treat as roughly tied).
+   - Versus simple     : best untrained score (Forward-collision rate only) gets AUC 0.579 vs 0.571 here -> the model adds little over a simple alarm measure.
+   - Accuracy caveat   : accuracy (76.2%) is below the 'predict nobody' baseline (89.6%) because the model flags captains on purpose; judge it by precision, recall and AUC instead.
