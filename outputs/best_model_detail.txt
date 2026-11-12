@@ -1,0 +1,58 @@
+BEST MODEL IN DETAIL: Extra Trees
+==============================================================================
+Task: predict which of 1,544 captains had an accident (161 did; 10.4%).
+Test method: 3x repeated 5-fold cross-validation; label definition 'all'.
+
+HEADLINE SCORES
+  ROC-AUC            0.571  (+/- 0.037 between folds; 95% range 0.523-0.620)   random = 0.500
+  PR-AUC             0.139   random = 0.104
+  Balanced accuracy  0.548  (flagging the riskiest 20%)   random = 0.500
+
+WHAT HAPPENS IF WE FLAG THE RISKIEST X% OF CAPTAINS?
+  Flag top  Captains  Accident captains caught  Precision  Recall   Lift
+       5%         77            10 of 161          13.0%    6.2%   1.25x
+      10%        154            20 of 161          13.0%   12.4%   1.25x
+      20%        309            44 of 161          14.2%   27.3%   1.37x
+      30%        463            66 of 161          14.3%   41.0%   1.37x
+  Precision = share of flagged captains who had an accident.  Recall = share of all accident
+  captains that we caught.  Lift = precision divided by the overall accident rate (1.0x = random).
+
+CONFUSION MATRIX (flagging the riskiest 20%)
+                         Predicted: flagged   Predicted: not flagged
+  Had accident                      44                      117
+  No accident                      265                     1118
+  -> 44 accident captains caught, 117 missed, 265 captains flagged without an accident.
+
+ACCIDENT RATE BY PREDICTED-RISK DECILE (10 = riskiest)
+   1    9.0%  ##################
+   2    7.8%  ###############
+   3    9.1%  ##################
+   4    7.1%  ##############
+   5    5.8%  ###########
+   6   10.4%  ####################
+   7   12.3%  ########################
+   8   14.3%  ############################
+   9   15.6%  ###############################
+  10   12.9%  #########################
+  overall 10.4%
+
+WHICH MEASURES THE MODEL RELIES ON (permutation importance; bigger = more important)
+  night_share                         0.0436
+  n_lines                             0.0429
+  active_days                         0.0284
+  rate_forward_collision_warning      0.0241
+  weekend_share                       0.0205
+  rate_harsh_braking                  0.0189
+  p90_speed                           0.0186
+  rate_pedestrian_collision_alert     0.0170
+  rate_headway_monitoring_alert       0.0160
+  rate_sharp_cornering                0.0157
+
+IS IT BETTER THAN LUCK?
+  Real labels AUC 0.571 vs 0.501 on average with shuffled labels; p = 0.050 -> significant at 5%.
+
+HOW MUCH BETTER IS IT THAN THE OTHERS?
+  Top three ML models: Extra Trees 0.571, Random Forest 0.561, SVM (RBF) 0.547
+  Their scores sit inside each other's margin of error, so the ranking between them is not reliable - treat them as roughly tied.
+  The simple rule-based alarm score gets AUC 0.557; the best ML model gets 0.571.
+  The ML model adds little or nothing over the simple score.

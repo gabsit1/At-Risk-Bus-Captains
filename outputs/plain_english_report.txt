@@ -1,0 +1,200 @@
+==============================================================================
+             AT-RISK BUS CAPTAIN STUDY - RESULTS IN PLAIN ENGLISH             
+==============================================================================
+
+==============================================================================
+1. WHAT WE WANTED TO FIND OUT
+==============================================================================
+Every bus captain's vehicle records alarms during the month (harsh braking,
+speeding, fatigue, forward collision warnings and so on). We asked: can these
+alarms help us spot captains who are more likely to be involved in an
+accident, so that the company can offer them coaching BEFORE something
+happens?
+
+==============================================================================
+2. WHAT DATA WE USED
+==============================================================================
+  - 1,544 bus captains with alarm records in March 2024.
+  - 161 of them (10 out of every 100) also appear in the accident records
+    (January to May 2024, after removing duplicates and near-misses).
+  - So we are checking: do the captains who had accidents tend to be the ones
+    who set off more alarms?
+
+==============================================================================
+3. THE SHORT ANSWER
+==============================================================================
+A SMALL LINK, BUT TOO WEAK TO TRUST FOR INDIVIDUALS. Captains who set off more
+alarms are slightly more likely to have had an accident, so the alarms are
+worth watching. But the link is modest: it is a nudge, not a crystal ball.
+
+Important: the alarms alone cannot tell us WHICH individual captain will have
+an accident. Many captains with lots of alarms never had an accident, and many
+with few alarms did. Use the results to prioritise who to check in on first -
+never to punish or label someone.
+
+==============================================================================
+4. HOW WELL DOES THE ALARM-BASED RISK SCORE WORK?
+==============================================================================
+We ranked every captain by a risk score built from their alarm rates. Then we
+looked at who actually had accidents:
+
+  - If we picked 100 captains at random, about 10 would have had an accident.
+  - If we picked the 10% of captains (about 154) with the HIGHEST alarm-based
+    risk scores, about 11 in 100 would have had an accident (1.1 times the
+    random rate). That is only a small improvement.
+  - The 'High risk' group used in the watchlist (it blends the alarm score
+    with the computer model) looks stronger: 18 in 100 had an accident,
+    compared with 9 in 100 in the 'Low risk' group.
+  - Be careful with that last comparison: we measured it on the same captains
+    used to build the groups, not on fresh data, so part of the gap may be
+    luck. The alarm-only numbers above are the safer ones to quote.
+
+Another way to say it: if you take one captain who had an accident and one who
+did not, the one with the accident has the higher risk score 56% of the time.
+A coin flip would be 50%, a perfect system 100%. (Plausible range given our
+sample size: 51% to 60%.)
+
+==============================================================================
+5. WHAT ABOUT THE MACHINE-LEARNING MODELS?
+==============================================================================
+We also trained computer models (Gradient Boosting, Logistic Regression,
+Random Forest) that learn patterns from all the alarm measures at once. We
+tested them the proper way: train on 70% of captains, then test on the 30% the
+model had never seen, repeated 30 times.
+
+  - The best model (Random Forest) ranked the accident captain higher 56% of
+    the time (coin flip = 50%).
+  - Among the 10% of captains it rated riskiest, 12 in 100 had an accident
+    (random picking: 10 in 100).
+  - A shuffle test (we scrambled who had accidents and re-ran the model) shows
+    these results are NOT clearly better than luck.
+  - When we tested only on accidents that happened AFTER March (76 captains),
+    the model scored 49% - essentially a coin flip.
+
+In plain terms: the fancy models did NOT beat the simple alarm score. That is
+a normal and honest result when there are only a few hundred accident cases
+and one month of alarm data. We recommend the simple, explainable score for
+now.
+
+==============================================================================
+6. WHICH BEHAVIOURS MATTER MOST?
+==============================================================================
+For each alarm type on its own, how often does the captain with the accident
+have the higher alarm rate? (50% = no link at all.)
+
+  forward collision warnings      57.9%   (link)
+  harsh braking                   56.2%   (link)
+  following too closely           53.7%   (no clear link)
+  fatigue alerts                  53.0%   (no clear link)
+  harsh acceleration              52.9%   (no clear link)
+
+The most telling behaviour was forward collision warnings. Behaviours marked
+'no clear link' did not reliably help predict accidents in this data.
+
+==============================================================================
+7. CAPTAINS TO CHECK IN ON FIRST (TOP 15 OF THE WATCHLIST)
+==============================================================================
+These captains have the highest combined risk scores and enough driving days
+to be judged fairly. A high score is a reason to have a supportive
+conversation, not proof of unsafe driving.
+
+  #1   Driver 21608  |  score 99/100  |  29.7 alarms/hour (typical 12.8)
+        Why: harsh braking (worse than 100% of drivers); forward collision
+             warnings (worse than 99% of drivers); following too closely
+             (worse than 92% of drivers)
+  #2   Driver 21895  |  score 98/100  |  22.9 alarms/hour (typical 12.8)
+        Why: pedestrian collision alerts (worse than 98% of drivers); forward
+             collision warnings (worse than 98% of drivers); following too
+             closely (worse than 98% of drivers)
+  #3   Driver 34649  |  score 98/100  |  21.7 alarms/hour (typical 12.8)
+        Why: harsh braking (worse than 97% of drivers); fatigue alerts (worse
+             than 93% of drivers)
+  #4   Driver 34042  |  score 97/100  |  23.2 alarms/hour (typical 12.8)
+        Why: forward collision warnings (worse than 98% of drivers); speeding
+             (worse than 95% of drivers); sharp cornering (worse than 93% of
+             drivers)
+  #5   Driver 67825  |  score 97/100  |  23.4 alarms/hour (typical 12.8)
+        Why: swaying (worse than 99% of drivers); harsh acceleration (worse
+             than 97% of drivers); harsh braking (worse than 97% of drivers)
+  #6   Driver 23857  |  score 97/100  |  23.0 alarms/hour (typical 12.8)
+        Why: harsh braking (worse than 95% of drivers); harsh acceleration
+             (worse than 95% of drivers); fatigue alerts (worse than 94% of
+             drivers)
+  #7   Driver 19337  |  score 97/100  |  22.8 alarms/hour (typical 12.8)
+        Why: swaying (worse than 99% of drivers); yawning alerts (worse than
+             96% of drivers); harsh acceleration (worse than 95% of drivers)
+  #8   Driver 29420  |  score 97/100  |  27.3 alarms/hour (typical 12.8)
+        Why: harsh braking (worse than 99% of drivers); forward collision
+             warnings (worse than 97% of drivers); yawning alerts (worse than
+             92% of drivers)
+  #9   Driver 23766  |  score 97/100  |  22.7 alarms/hour (typical 12.8)
+        Why: swaying (worse than 99% of drivers); harsh braking (worse than
+             94% of drivers); pedestrian collision alerts (worse than 94% of
+             drivers)
+  #10  Driver 19676  |  score 97/100  |  27.4 alarms/hour (typical 12.8)
+        Why: harsh braking (worse than 99% of drivers); yawning alerts (worse
+             than 97% of drivers); forward collision warnings (worse than 95%
+             of drivers)
+  #11  Driver 20668  |  score 96/100  |  21.6 alarms/hour (typical 12.8)
+        Why: forward collision warnings (worse than 98% of drivers);
+             pedestrian collision alerts (worse than 94% of drivers);
+             following too closely (worse than 91% of drivers)
+  #12  Driver 28348  |  score 96/100  |  31.3 alarms/hour (typical 12.8)
+        Why: forward collision warnings (worse than 100% of drivers); harsh
+             braking (worse than 99% of drivers); fatigue alerts (worse than
+             98% of drivers)
+  #13  Driver 34475  |  score 96/100  |  16.3 alarms/hour (typical 12.8)
+        Why: speeding (worse than 98% of drivers); yawning alerts (worse than
+             96% of drivers); following too closely (worse than 93% of
+             drivers)
+  #14  Driver 29632  |  score 96/100  |  23.0 alarms/hour (typical 12.8)
+        Why: yawning alerts (worse than 96% of drivers); forward collision
+             warnings (worse than 96% of drivers); pedestrian collision alerts
+             (worse than 95% of drivers)
+  #15  Driver 13401  |  score 95/100  |  30.0 alarms/hour (typical 12.8)
+        Why: harsh braking (worse than 100% of drivers); forward collision
+             warnings (worse than 99% of drivers); following too closely
+             (worse than 91% of drivers)
+
+The full top-100 list is saved in watchlist_plain_english.csv (opens in
+Excel).
+
+==============================================================================
+8. THINGS TO KEEP IN MIND
+==============================================================================
+  - Alarms measure driving style and alertness. Accidents are also caused by
+    road conditions, other drivers and bad luck - things no alarm can see.
+  - We only have one month of alarms, so one bad week can distort a captain's
+    score.
+  - We do not know how many kilometres each captain drove. We used the number
+    of hours with alarm activity as a stand-in, which is not perfect.
+  - Captains with fewer than 5 working days were left out of the watchlist
+    because their scores would be unreliable.
+  - The accident records cover January to May but the alarms only cover March,
+    so the timing does not line up perfectly.
+  - Treat results as a starting point for coaching and support, not as a
+    judgement of any individual.
+
+==============================================================================
+9. RECOMMENDED NEXT STEPS
+==============================================================================
+  - Collect several more months of alarm data - this is the single biggest way
+    to improve accuracy.
+  - Record accident severity and who was at fault, so we can focus on
+    preventable accidents.
+  - Record kilometres or hours driven for each captain.
+  - Pilot the watchlist as a coaching tool, then check whether flagged
+    captains improve.
+  - Re-run this study each quarter and compare.
+
+==============================================================================
+GLOSSARY
+==============================================================================
+  - Alarm rate: how many alarms a captain triggers per hour of driving, so
+    busy and quiet captains are compared fairly.
+  - Risk score: a number from 0 to 100 combining a captain's alarm rates.
+    Higher = more alarms than most colleagues.
+  - Random picking: choosing captains by chance, with no information - the
+    standard we must beat.
+  - Coin flip (50%): the score you would get by guessing; anything near 50%
+    means no real predictive power.
